@@ -1,10 +1,9 @@
 import React from "react";
 import styled from "@emotion/styled";
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
+import {Favorite, FavoriteBorder} from '@mui/icons-material';
 import {formatDistanceToNowStrict} from 'date-fns'
+import {likedTweets} from "../api/data";
+import {Avatar, ListItem, ListItemAvatar, ListItemText} from "@mui/material";
 
 const TweetHeader = styled.div`
   display: flex;
@@ -25,6 +24,14 @@ const TweetInfo = styled.span`
   }
 `
 
+const HeartIcon = styled(FavoriteBorder)`
+  fill: rgb(83, 100, 113);
+`
+
+const HeartFilledIcon = styled(Favorite)`
+  fill: rgb(249, 24, 128);
+`
+
 const Tweet = ({tweet}) => {
     return <>
         <ListItem alignItems="flex-start" sx={{border: '1px solid rgb(239, 243, 244)'}}>
@@ -37,6 +44,13 @@ const Tweet = ({tweet}) => {
                     <TweetInfo> {`@${tweet.account}`} <span>&#183;</span>{`${formatDistanceToNowStrict(tweet.timestamp)}`}</TweetInfo>
                 </TweetHeader>
                 <span>{tweet.content}</span>
+                <p>
+                    {
+                        tweet.liked ?
+                            <HeartFilledIcon onClick={()=> likedTweets.next(likedTweets.value.filter(t => t !== tweet.id )) }/> :
+                            <HeartIcon onClick={() => likedTweets.next([...likedTweets.value, tweet.id])}/>
+                    }
+                </p>
             </ListItemText>
         </ListItem>
     </>
