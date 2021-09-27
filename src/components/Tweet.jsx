@@ -1,9 +1,17 @@
-import React from "react";
-import styled from "@emotion/styled";
-import {Favorite, FavoriteBorder} from '@mui/icons-material';
-import {formatDistanceToNowStrict} from 'date-fns'
-import {likedTweets} from "../api/data";
-import {Avatar, ListItem, ListItemAvatar, ListItemText} from "@mui/material";
+import React from 'react'
+import styled from '@emotion/styled'
+import {Favorite, FavoriteBorder} from '@mui/icons-material'
+import {likeTweet, unlikeTweet} from '../observables/tweetsObservable'
+import {Avatar, ListItem, ListItemAvatar, ListItemText} from '@mui/material'
+import convertTimespanToTimeAgo from '../helpers/convertTimespanToTimeAgo'
+
+const TweetListItem = styled(ListItem)`
+  align-items: flex-start;
+  border: 1px solid rgb(239, 243, 244);
+  :hover {
+    background-color: #F7F7F7;
+  }
+`
 
 const TweetHeader = styled.div`
   display: flex;
@@ -12,47 +20,76 @@ const TweetHeader = styled.div`
 `
 const Author = styled.span`
   font-weight: bold;
+  flex: none;
 `
-const TweetInfo = styled.span`
+const TweetInfo = styled.div`
   color: rgb(83, 100, 113);
   display: flex;
-  justify-content: center;
+  flex: 0 1 auto;
+  overflow: hidden;
+  justify-content: flex-start;
   align-items: center;
   margin-left: 5px;
-  span {
+`
+
+const CenteredDot = styled.div`
     margin: 0 5px;
-  }
+    padding: 0;
+    flex: none;
+`
+
+const AuthorId = styled.div`
+  flex: 0 1 auto;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+`
+
+const TimeAgo = styled.div`
+  flex: 1 0 auto;
 `
 
 const HeartIcon = styled(FavoriteBorder)`
   fill: rgb(83, 100, 113);
+  cursor: pointer;
+  :hover {
+    fill: rgb(249, 24, 128);
+  }
 `
 
 const HeartFilledIcon = styled(Favorite)`
   fill: rgb(249, 24, 128);
+  cursor: pointer;
 `
+
+const RenderTweetHeader = ({tweet}) => (
+    <TweetHeader>
+        <Author>{tweet.account}</Author>
+        <TweetInfo>
+            <AuthorId>{`@${tweet.account}`}</AuthorId>
+            <CenteredDot>&#183;</CenteredDot>
+            <TimeAgo>{convertTimespanToTimeAgo(tweet.timestamp)}</TimeAgo>
+        </TweetInfo>
+    </TweetHeader>
+)
 
 const Tweet = ({tweet}) => {
     return <>
-        <ListItem alignItems="flex-start" sx={{border: '1px solid rgb(239, 243, 244)'}}>
+        <TweetListItem>
             <ListItemAvatar>
                 <Avatar/>
             </ListItemAvatar>
             <ListItemText>
-                <TweetHeader>
-                    <Author>{tweet.account}</Author>
-                    <TweetInfo> {`@${tweet.account}`} <span>&#183;</span>{`${formatDistanceToNowStrict(tweet.timestamp)}`}</TweetInfo>
-                </TweetHeader>
+                <RenderTweetHeader tweet={tweet}/>
                 <span>{tweet.content}</span>
-                <p>
-                    {
-                        tweet.liked ?
-                            <HeartFilledIcon onClick={()=> likedTweets.next(likedTweets.value.filter(t => t !== tweet.id )) }/> :
-                            <HeartIcon onClick={() => likedTweets.next([...likedTweets.value, tweet.id])}/>
+                <div>
+                    {tweet.liked ?
+                            <HeartFilledIcon onClick={()=> unlikeTweet(tweet.id) }/> :
+                            <HeartIcon onClick={() => likeTweet(tweet.id, tweet.timestamp)}/>
                     }
-                </p>
+                </div>
             </ListItemText>
-        </ListItem>
+        </TweetListItem>
     </>
 }
 

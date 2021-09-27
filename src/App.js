@@ -1,14 +1,16 @@
-import {ThemeProvider, CssBaseline} from '@mui/material'
+import {ThemeProvider, CssBaseline, Container} from '@mui/material'
 import theme from './theme'
 import TweetList from "./components/TweetList";
+import Header from "./components/Header";
 
 function App() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline/>
-            <div className="App">
+            <Container disableGutters maxWidth="md">
+                <Header/>
                 <TweetList/>
-            </div>
+            </Container>
         </ThemeProvider>
     );
 }
