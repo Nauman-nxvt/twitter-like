@@ -33,7 +33,7 @@ function TweetList() {
         <TweetsListContainer disableGutters maxWidth="md">
             <TweetsList>
                 <TweetsListHeader currentTweets={currentTweets}/>
-                { currentTweets.length > 0 && currentTweets.map(tweet =>
+                { currentTweets.map(tweet =>
                     <Tweet tweet={tweet} key={tweet.id}/>
                 )}
             </TweetsList>

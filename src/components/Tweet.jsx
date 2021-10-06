@@ -2,7 +2,7 @@ import React from 'react'
 import styled from '@emotion/styled'
 import {Favorite, FavoriteBorder} from '@mui/icons-material'
 import {likeTweet, unlikeTweet} from '../observables/tweetsObservable'
-import {Avatar, ListItem, ListItemAvatar, ListItemText} from '@mui/material'
+import {Avatar, IconButton, ListItem, ListItemAvatar, ListItemText} from '@mui/material'
 import convertTimespanToTimeAgo from '../helpers/convertTimespanToTimeAgo'
 
 const TweetListItem = styled(ListItem)`
@@ -49,6 +49,11 @@ const TimeAgo = styled.div`
   flex: 1 0 auto;
 `
 
+const IconBtn = styled(IconButton)`
+  margin: 0;
+  padding: 0;
+`
+
 const HeartIcon = styled(FavoriteBorder)`
   fill: rgb(83, 100, 113);
   cursor: pointer;
@@ -84,8 +89,12 @@ const Tweet = ({tweet}) => {
                 <span>{tweet.content}</span>
                 <div>
                     {tweet.liked ?
-                            <HeartFilledIcon onClick={()=> unlikeTweet(tweet.id) }/> :
-                            <HeartIcon onClick={() => likeTweet(tweet.id, tweet.timestamp)}/>
+                        <IconBtn aria-label="unlike tweet" component="span" onClick={()=> unlikeTweet(tweet.id) }>
+                            <HeartFilledIcon/>
+                        </IconBtn> :
+                        <IconBtn aria-label="like tweet" component="span" onClick={() => likeTweet(tweet.id, tweet.timestamp)}>
+                            <HeartIcon />
+                        </IconBtn>
                     }
                 </div>
             </ListItemText>
